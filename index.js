@@ -95,6 +95,17 @@ app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
 
+app.get("/transactions", (req, res) => {
+  const query = "SELECT * FROM transactions";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Database query error:", err);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json({ transactions: results });
+  });
+});
+
 app.get("/health", (req, res) => {
   res.status(200).send("OK");
 });
