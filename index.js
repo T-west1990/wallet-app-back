@@ -13,7 +13,7 @@ app.use(express.json());
  const db = mysql.createPool({
    host: process.env.DB_HOST,
    user: process.env.DB_USER,
-   password: process.env.DB_PASS || " ", // Default to empty string if no password is provided
+   password: process.env.DB_PASS,
    database: process.env.DB_NAME,
    connectionLimit: 10, // Maximum number of connections in the pool
  });
