@@ -10,21 +10,21 @@ app.use(cors());
 app.use(express.json());
 
 // // Database connection pool
-// const db = mysql.createPool({
-//   host: process.env.DB_HOST,
-//   user: process.env.DB_USER,
-//   password: process.env.DB_PASS || "", // Default to empty string if no password is provided
-//   database: process.env.DB_NAME,
-//   connectionLimit: 10, // Maximum number of connections in the pool
-// });
+ const db = mysql.createPool({
+   host: process.env.DB_HOST,
+   user: process.env.DB_USER,
+   password: process.env.DB_PASS || " ", // Default to empty string if no password is provided
+   database: process.env.DB_NAME,
+   connectionLimit: 10, // Maximum number of connections in the pool
+ });
 
 //Database connection
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "wallet_app",
-});
+//const db = mysql.createConnection({
+//  host: "localhost",
+//  user: "root",
+//  password: "",
+//  database: "wallet_app",
+//});
 
 // Health check route
 app.get("/health", (req, res) => {
