@@ -9,32 +9,19 @@ const port = process.env.PORT || 8000;
 app.use(cors());
 app.use(express.json());
 
-// Database connection
-// const db = mysql.createConnection({
-//   host: "localhost",
-//   user: "root",
-//   password: "",
-//   database: "wallet_app",
-// });
-
+// Database connection pool
 const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
-  password: process.env.DB_PASS || "", // Default to empty string if DB_PASS is not set
+  password: process.env.DB_PASS || "", // Default to empty string if no password is provided
   database: process.env.DB_NAME,
   connectionLimit: 10, // Maximum number of connections in the pool
 });
 
-
-db.connect((err) => {
-  if (err) {
-    console.error("Database connection failed:", err.stack);
-    return;
-  }
-  console.log("Connected to database");
+// Health check route
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
 });
-
-// Routes
 
 // Root route
 app.get("/", (req, res) => {
@@ -45,7 +32,10 @@ app.get("/", (req, res) => {
 app.get("/transactions", (req, res) => {
   const query = "SELECT * FROM transactions";
   db.query(query, (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+    if (err) {
+      console.error("Database query error:", err);
+      return res.status(500).json({ error: "Database query failed" });
+    }
     res.json({ transactions: results });
   });
 });
@@ -93,19 +83,4 @@ app.delete("/transactions/:id", (req, res) => {
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
-});
-
-app.get("/transactions", (req, res) => {
-  const query = "SELECT * FROM transactions";
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Database query error:", err);
-      return res.status(500).json({ error: "Database query failed" });
-    }
-    res.json({ transactions: results });
-  });
-});
-
-app.get("/health", (req, res) => {
-  res.status(200).send("OK");
 });
