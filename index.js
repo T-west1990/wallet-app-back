@@ -17,12 +17,14 @@ app.use(express.json());
 //   database: "wallet_app",
 // });
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
-  password: process.env.DB_PASS,
+  password: process.env.DB_PASS || "", // Default to empty string if DB_PASS is not set
   database: process.env.DB_NAME,
+  connectionLimit: 10, // Maximum number of connections in the pool
 });
+
 
 db.connect((err) => {
   if (err) {
